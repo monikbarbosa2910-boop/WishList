@@ -8,35 +8,26 @@
 
 <title>Minha Wishlist</title>
 
-<link rel="icon" type="image/png" href="iconf.png.png">
+<link rel="icon" type="image/png" sizes="512x512" href="iconf.png.png">
 <link rel="apple-touch-icon" href="iconf.png.png">
 
 <style>
 
 body{
-font-family: Arial, Helvetica, sans-serif;
-background: linear-gradient(135deg,#5b3df5,#8b5cf6,#a855f7);
+font-family: Arial;
 margin:0;
 padding:30px;
 text-align:center;
 color:white;
-}
-
-h1{
-margin-bottom:25px;
-}
-
-.input-area{
-margin-bottom:30px;
+background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);
 }
 
 input{
-width:320px;
-max-width:90%;
 padding:12px;
 border-radius:10px;
 border:none;
-outline:none;
+margin:5px;
+width:220px;
 }
 
 button{
@@ -47,51 +38,38 @@ background:white;
 color:#6b21a8;
 font-weight:bold;
 cursor:pointer;
-margin-left:5px;
-}
-
-button:hover{
-opacity:0.9;
 }
 
 #produtos{
+column-count:3;
+column-gap:20px;
+max-width:1000px;
+margin:auto;
 margin-top:30px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-max-width:900px;
-margin-left:auto;
-margin-right:auto;
 }
 
 .card{
 background:white;
 color:black;
 border-radius:14px;
+margin-bottom:20px;
+display:inline-block;
+width:100%;
 overflow:hidden;
 box-shadow:0 6px 15px rgba(0,0,0,0.25);
-transition:0.3s;
-display:flex;
-flex-direction:column;
-}
-
-.card:hover{
-transform:scale(1.05);
 }
 
 .card img{
 width:100%;
-height:150px;
-object-fit:cover;
+height:auto;
 }
 
 .card h4{
 padding:10px;
-font-size:14px;
-min-height:40px;
 }
 
 .card a{
+display:block;
 margin:10px;
 padding:10px;
 background:#7c3aed;
@@ -110,28 +88,16 @@ border-radius:8px;
 cursor:pointer;
 }
 
-/* RESPONSIVO PARA CELULAR */
-
-@media (max-width:600px){
-
-body{
-padding:20px;
-}
-
-input{
-width:100%;
-margin-bottom:10px;
-}
-
-button{
-width:100%;
-margin-left:0;
-}
-
+@media(max-width:700px){
 #produtos{
-grid-template-columns:1fr;
+column-count:2;
+}
 }
 
+@media(max-width:500px){
+#produtos{
+column-count:1;
+}
 }
 
 </style>
@@ -142,9 +108,18 @@ grid-template-columns:1fr;
 
 <h1>⭐ Minha Wishlist</h1>
 
-<div class="input-area">
-<input id="link" placeholder="Cole o link do produto">
-<button onclick="buscarProduto()">Adicionar</button>
+<div>
+
+<input id="titulo" placeholder="Nome do produto">
+
+<input type="file" id="imagem" accept="image/*">
+
+<input id="link" placeholder="Link do produto">
+
+<br>
+
+<button onclick="adicionarProduto()">Adicionar</button>
+
 </div>
 
 <div id="produtos"></div>
@@ -157,23 +132,26 @@ function salvar(){
 localStorage.setItem("wishlist", JSON.stringify(lista));
 }
 
-function criarCard(produto,index){
+function renderizar(){
 
-let card = document.createElement("div");
+let area=document.getElementById("produtos");
+
+area.innerHTML="";
+
+lista.forEach((produto,index)=>{
+
+let card=document.createElement("div");
 card.className="card";
 
 card.innerHTML=`
 
 <img src="${produto.imagem}">
+
 <h4>${produto.titulo}</h4>
 
-<a href="${produto.link}" target="_blank">
-Ver produto
-</a>
+<a href="${produto.link}" target="_blank">Ver produto</a>
 
-<button class="remover">
-Remover
-</button>
+<button class="remover">Remover</button>
 
 `;
 
@@ -183,54 +161,39 @@ salvar();
 renderizar();
 };
 
-document.getElementById("produtos").appendChild(card);
+area.appendChild(card);
 
-}
-
-function renderizar(){
-
-document.getElementById("produtos").innerHTML="";
-
-lista.forEach((produto,index)=>{
-criarCard(produto,index);
 });
 
 }
 
-async function buscarProduto(){
+function adicionarProduto(){
 
+let titulo=document.getElementById("titulo").value;
 let link=document.getElementById("link").value;
+let arquivo=document.getElementById("imagem").files[0];
 
-if(!link) return;
+if(!titulo || !link || !arquivo){
+alert("Preencha todos os campos");
+return;
+}
 
-let api="https://api.microlink.io/?url="+encodeURIComponent(link);
+let reader = new FileReader();
 
-try{
+reader.onload=function(e){
 
-let resposta=await fetch(api);
-let dados=await resposta.json();
-
-let titulo=dados.data.title || "Produto";
-let imagem=dados.data.image?.url || "https://via.placeholder.com/300";
-
-let produto={
+lista.push({
 titulo:titulo,
-imagem:imagem,
+imagem:e.target.result,
 link:link
-};
-
-lista.push(produto);
+});
 
 salvar();
 renderizar();
 
-document.getElementById("link").value="";
+};
 
-}catch{
-
-alert("Não foi possível carregar o produto.");
-
-}
+reader.readAsDataURL(arquivo);
 
 }
 
