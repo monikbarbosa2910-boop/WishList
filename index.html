@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -16,22 +17,28 @@
 body{
 font-family: Arial;
 margin:0;
-padding:30px;
+padding:25px;
 text-align:center;
 color:white;
 background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);
 }
 
+h1{
+margin-bottom:20px;
+}
+
+/* INPUTS */
+
 input{
-padding:12px;
+padding:10px;
 border-radius:10px;
 border:none;
 margin:5px;
-width:220px;
+width:200px;
 }
 
 button{
-padding:12px 18px;
+padding:10px 16px;
 border:none;
 border-radius:10px;
 background:white;
@@ -40,9 +47,11 @@ font-weight:bold;
 cursor:pointer;
 }
 
+/* BOTÃO UPLOAD */
+
 .upload-btn{
 display:inline-block;
-padding:12px 20px;
+padding:10px 18px;
 background:#7c3aed;
 color:white;
 border-radius:10px;
@@ -61,64 +70,81 @@ transform:scale(1.05);
 display:none;
 }
 
+/* PREVIEW DA IMAGEM */
+
+#preview{
+margin-top:10px;
+}
+
+#preview img{
+width:120px;
+border-radius:10px;
+}
+
+/* GRID DOS PRODUTOS */
+
 #produtos{
-column-count:3;
-column-gap:20px;
-max-width:1000px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+max-width:700px;
 margin:auto;
 margin-top:30px;
 }
 
+/* CARD */
+
 .card{
 background:white;
 color:black;
-border-radius:14px;
-margin-bottom:20px;
-display:inline-block;
-width:100%;
+border-radius:12px;
 overflow:hidden;
-box-shadow:0 6px 15px rgba(0,0,0,0.25);
+box-shadow:0 5px 12px rgba(0,0,0,0.25);
+font-size:14px;
 }
 
 .card img{
 width:100%;
-height:auto;
+height:140px;
+object-fit:cover;
 }
 
 .card h4{
-padding:10px;
+padding:8px;
+margin:0;
+font-size:14px;
 }
 
 .card a{
 display:block;
-margin:10px;
-padding:10px;
+margin:8px;
+padding:8px;
 background:#7c3aed;
 color:white;
 text-decoration:none;
 border-radius:8px;
+font-size:13px;
 }
 
 .remover{
-margin:10px;
+margin:8px;
 background:#ef4444;
 color:white;
 border:none;
-padding:8px;
+padding:6px;
 border-radius:8px;
 cursor:pointer;
+font-size:12px;
 }
 
-@media(max-width:700px){
-#produtos{
-column-count:2;
-}
-}
+/* RESPONSIVO */
 
 @media(max-width:500px){
+
 #produtos{
-column-count:1;
+grid-template-columns:1fr;
 }
+
 }
 
 </style>
@@ -143,6 +169,8 @@ column-count:1;
 <br>
 
 <button onclick="adicionarProduto()">Adicionar</button>
+
+<div id="preview"></div>
 
 </div>
 
@@ -191,6 +219,25 @@ area.appendChild(card);
 
 }
 
+document.getElementById("imagem").addEventListener("change",function(){
+
+let arquivo=this.files[0];
+
+if(!arquivo) return;
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+document.getElementById("preview").innerHTML=
+`<img src="${e.target.result}">`;
+
+};
+
+reader.readAsDataURL(arquivo);
+
+});
+
 function adicionarProduto(){
 
 let titulo=document.getElementById("titulo").value;
@@ -198,22 +245,72 @@ let link=document.getElementById("link").value;
 let arquivo=document.getElementById("imagem").files[0];
 
 if(!titulo || !link || !arquivo){
+
 alert("Preencha todos os campos");
+
 return;
+
 }
 
-let reader = new FileReader();
+let reader=new FileReader();
 
 reader.onload=function(e){
 
+let img=new Image();
+
+img.onload=function(){
+
+let canvas=document.createElement("canvas");
+let ctx=canvas.getContext("2d");
+
+let tamanhoMax=300;
+
+let largura=img.width;
+let altura=img.height;
+
+if(largura>altura){
+
+if(largura>tamanhoMax){
+
+altura*=tamanhoMax/largura;
+largura=tamanhoMax;
+
+}
+
+}else{
+
+if(altura>tamanhoMax){
+
+largura*=tamanhoMax/altura;
+altura=tamanhoMax;
+
+}
+
+}
+
+canvas.width=largura;
+canvas.height=altura;
+
+ctx.drawImage(img,0,0,largura,altura);
+
+let imagemComprimida=canvas.toDataURL("image/jpeg",0.7);
+
 lista.push({
+
 titulo:titulo,
-imagem:e.target.result,
+imagem:imagemComprimida,
 link:link
+
 });
 
 salvar();
 renderizar();
+
+document.getElementById("preview").innerHTML="";
+
+};
+
+img.src=e.target.result;
 
 };
 
@@ -227,3 +324,4 @@ renderizar();
 
 </body>
 </html>
+```
