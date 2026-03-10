@@ -69,7 +69,7 @@ transform:scale(1.05);
 display:none;
 }
 
-/* PREVIEW DA IMAGEM */
+/* PREVIEW */
 
 #preview{
 margin-top:10px;
@@ -80,7 +80,7 @@ width:120px;
 border-radius:10px;
 }
 
-/* GRID DOS PRODUTOS */
+/* GRID */
 
 #produtos{
 display:grid;
@@ -152,7 +152,7 @@ grid-template-columns:1fr;
 
 <body>
 
-<h1>⭐ Minha Wishlist</h1>
+<h1 id="tituloPagina">⭐ Minha Wishlist</h1>
 
 <div>
 
@@ -179,8 +179,18 @@ grid-template-columns:1fr;
 
 let lista = JSON.parse(localStorage.getItem("wishlist")) || [];
 
+function atualizarContador(){
+
+let titulo=document.getElementById("tituloPagina");
+
+titulo.innerText=`⭐ Minha Wishlist (${lista.length} itens)`;
+
+}
+
 function salvar(){
+
 localStorage.setItem("wishlist", JSON.stringify(lista));
+
 }
 
 function renderizar(){
@@ -192,6 +202,7 @@ area.innerHTML="";
 lista.forEach((produto,index)=>{
 
 let card=document.createElement("div");
+
 card.className="card";
 
 card.innerHTML=`
@@ -207,14 +218,20 @@ card.innerHTML=`
 `;
 
 card.querySelector(".remover").onclick=()=>{
+
 lista.splice(index,1);
+
 salvar();
+
 renderizar();
+
 };
 
 area.appendChild(card);
 
 });
+
+atualizarContador();
 
 }
 
@@ -240,7 +257,9 @@ reader.readAsDataURL(arquivo);
 function adicionarProduto(){
 
 let titulo=document.getElementById("titulo").value;
+
 let link=document.getElementById("link").value;
+
 let arquivo=document.getElementById("imagem").files[0];
 
 if(!titulo || !link || !arquivo){
@@ -260,11 +279,13 @@ let img=new Image();
 img.onload=function(){
 
 let canvas=document.createElement("canvas");
+
 let ctx=canvas.getContext("2d");
 
 let tamanhoMax=300;
 
 let largura=img.width;
+
 let altura=img.height;
 
 if(largura>altura){
@@ -272,6 +293,7 @@ if(largura>altura){
 if(largura>tamanhoMax){
 
 altura*=tamanhoMax/largura;
+
 largura=tamanhoMax;
 
 }
@@ -281,6 +303,7 @@ largura=tamanhoMax;
 if(altura>tamanhoMax){
 
 largura*=tamanhoMax/altura;
+
 altura=tamanhoMax;
 
 }
@@ -288,6 +311,7 @@ altura=tamanhoMax;
 }
 
 canvas.width=largura;
+
 canvas.height=altura;
 
 ctx.drawImage(img,0,0,largura,altura);
@@ -297,13 +321,24 @@ let imagemComprimida=canvas.toDataURL("image/jpeg",0.7);
 lista.push({
 
 titulo:titulo,
+
 imagem:imagemComprimida,
+
 link:link
 
 });
 
 salvar();
+
 renderizar();
+
+/* limpar campos */
+
+document.getElementById("titulo").value="";
+
+document.getElementById("link").value="";
+
+document.getElementById("imagem").value="";
 
 document.getElementById("preview").innerHTML="";
 
