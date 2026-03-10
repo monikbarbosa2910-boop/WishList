@@ -26,8 +26,6 @@ h1{
 margin-bottom:20px;
 }
 
-/* INPUTS */
-
 input{
 padding:10px;
 border-radius:10px;
@@ -44,9 +42,8 @@ background:white;
 color:#6b21a8;
 font-weight:bold;
 cursor:pointer;
+margin:4px;
 }
-
-/* BOTÃO UPLOAD */
 
 .upload-btn{
 display:inline-block;
@@ -69,8 +66,6 @@ transform:scale(1.05);
 display:none;
 }
 
-/* PREVIEW */
-
 #preview{
 margin-top:10px;
 }
@@ -80,8 +75,6 @@ width:120px;
 border-radius:10px;
 }
 
-/* GRID */
-
 #produtos{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -90,8 +83,6 @@ max-width:700px;
 margin:auto;
 margin-top:30px;
 }
-
-/* CARD */
 
 .card{
 background:white;
@@ -136,8 +127,6 @@ cursor:pointer;
 font-size:12px;
 }
 
-/* RESPONSIVO */
-
 @media(max-width:500px){
 
 #produtos{
@@ -169,6 +158,17 @@ grid-template-columns:1fr;
 
 <button onclick="adicionarProduto()">Adicionar</button>
 
+<br>
+
+<button onclick="exportarWishlist()">📤 Exportar</button>
+
+<label class="upload-btn">
+📥 Importar
+<input type="file" id="importarArquivo" accept=".json">
+</label>
+
+<button onclick="compartilharWishlist()">🔗 Compartilhar</button>
+
 <div id="preview"></div>
 
 </div>
@@ -177,7 +177,17 @@ grid-template-columns:1fr;
 
 <script>
 
-let lista = JSON.parse(localStorage.getItem("wishlist")) || [];
+/* LER LISTA COMPARTILHADA */
+
+let params=new URLSearchParams(window.location.search);
+
+let listaCompartilhada=params.get("lista");
+
+let lista=listaCompartilhada
+?JSON.parse(decodeURIComponent(listaCompartilhada))
+:JSON.parse(localStorage.getItem("wishlist"))||[];
+
+/* CONTADOR */
 
 function atualizarContador(){
 
@@ -187,11 +197,15 @@ titulo.innerText=`⭐ Minha Wishlist (${lista.length} itens)`;
 
 }
 
+/* SALVAR */
+
 function salvar(){
 
-localStorage.setItem("wishlist", JSON.stringify(lista));
+localStorage.setItem("wishlist",JSON.stringify(lista));
 
 }
+
+/* RENDERIZAR */
 
 function renderizar(){
 
@@ -235,11 +249,13 @@ atualizarContador();
 
 }
 
+/* PREVIEW */
+
 document.getElementById("imagem").addEventListener("change",function(){
 
 let arquivo=this.files[0];
 
-if(!arquivo) return;
+if(!arquivo)return;
 
 let reader=new FileReader();
 
@@ -254,6 +270,8 @@ reader.readAsDataURL(arquivo);
 
 });
 
+/* ADICIONAR PRODUTO */
+
 function adicionarProduto(){
 
 let titulo=document.getElementById("titulo").value;
@@ -262,7 +280,7 @@ let link=document.getElementById("link").value;
 
 let arquivo=document.getElementById("imagem").files[0];
 
-if(!titulo || !link || !arquivo){
+if(!titulo||!link||!arquivo){
 
 alert("Preencha todos os campos");
 
@@ -321,9 +339,7 @@ let imagemComprimida=canvas.toDataURL("image/jpeg",0.7);
 lista.push({
 
 titulo:titulo,
-
 imagem:imagemComprimida,
-
 link:link
 
 });
@@ -332,14 +348,11 @@ salvar();
 
 renderizar();
 
-/* limpar campos */
+/* LIMPAR CAMPOS */
 
 document.getElementById("titulo").value="";
-
 document.getElementById("link").value="";
-
 document.getElementById("imagem").value="";
-
 document.getElementById("preview").innerHTML="";
 
 };
@@ -349,6 +362,66 @@ img.src=e.target.result;
 };
 
 reader.readAsDataURL(arquivo);
+
+}
+
+/* EXPORTAR */
+
+function exportarWishlist(){
+
+let dados=JSON.stringify(lista,null,2);
+
+let blob=new Blob([dados],{type:"application/json"});
+
+let url=URL.createObjectURL(blob);
+
+let a=document.createElement("a");
+
+a.href=url;
+
+a.download="wishlist.json";
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+}
+
+/* IMPORTAR */
+
+document.getElementById("importarArquivo").addEventListener("change",function(){
+
+let arquivo=this.files[0];
+
+if(!arquivo)return;
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+lista=JSON.parse(e.target.result);
+
+salvar();
+
+renderizar();
+
+};
+
+reader.readAsText(arquivo);
+
+});
+
+/* COMPARTILHAR */
+
+function compartilharWishlist(){
+
+let dados=encodeURIComponent(JSON.stringify(lista));
+
+let link=window.location.origin+window.location.pathname+"?lista="+dados;
+
+navigator.clipboard.writeText(link);
+
+alert("Link da wishlist copiado!");
 
 }
 
