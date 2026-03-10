@@ -2,12 +2,13 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Minha Wishlist</title>
 
-<link rel="icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 
 <style>
@@ -30,7 +31,8 @@ margin-bottom:30px;
 }
 
 input{
-width:300px;
+width:320px;
+max-width:90%;
 padding:12px;
 border-radius:10px;
 border:none;
@@ -55,9 +57,11 @@ opacity:0.9;
 #produtos{
 margin-top:30px;
 display:grid;
-grid-template-columns:repeat(auto-fill,220px);
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:20px;
-justify-content:center;
+max-width:900px;
+margin-left:auto;
+margin-right:auto;
 }
 
 .card{
@@ -104,6 +108,30 @@ border:none;
 padding:8px;
 border-radius:8px;
 cursor:pointer;
+}
+
+/* RESPONSIVO PARA CELULAR */
+
+@media (max-width:600px){
+
+body{
+padding:20px;
+}
+
+input{
+width:100%;
+margin-bottom:10px;
+}
+
+button{
+width:100%;
+margin-left:0;
+}
+
+#produtos{
+grid-template-columns:1fr;
+}
+
 }
 
 </style>
