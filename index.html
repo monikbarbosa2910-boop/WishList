@@ -14,125 +14,164 @@
 <style>
 
 body{
-font-family: Arial;
-margin:0;
-padding:25px;
-text-align:center;
-color:white;
-background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);
+  font-family: Arial;
+  margin:0;
+  padding:25px;
+  text-align:center;
+  color:white;
+  background:linear-gradient(135deg,#4c1d95,#7c3aed,#a855f7);
 }
 
 h1{
-margin-bottom:20px;
+  margin-bottom:20px;
 }
 
 input{
-padding:10px;
-border-radius:10px;
-border:none;
-margin:5px;
-width:200px;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  margin:5px;
+  width:200px;
 }
 
 button{
-padding:10px 16px;
-border:none;
-border-radius:10px;
-background:white;
-color:#6b21a8;
-font-weight:bold;
-cursor:pointer;
-margin:4px;
+  padding:10px 16px;
+  border:none;
+  border-radius:10px;
+  background:white;
+  color:#6b21a8;
+  font-weight:bold;
+  cursor:pointer;
+  margin:4px;
 }
 
 .upload-btn{
-display:inline-block;
-padding:10px 18px;
-background:#7c3aed;
-color:white;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-margin:5px;
-transition:0.2s;
+  display:inline-block;
+  padding:10px 18px;
+  background:#7c3aed;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:5px;
+  transition:0.2s;
 }
 
 .upload-btn:hover{
-background:#6d28d9;
-transform:scale(1.05);
+  background:#6d28d9;
+  transform:scale(1.05);
 }
 
 .upload-btn input{
-display:none;
+  display:none;
 }
 
 #preview{
-margin-top:10px;
+  margin-top:10px;
 }
 
 #preview img{
-width:120px;
-border-radius:10px;
+  width:120px;
+  border-radius:10px;
 }
 
 #produtos{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-max-width:700px;
-margin:auto;
-margin-top:30px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+  max-width:700px;
+  margin:auto;
+  margin-top:30px;
 }
 
 .card{
-background:white;
-color:black;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 5px 12px rgba(0,0,0,0.25);
-font-size:14px;
+  background:white;
+  color:black;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 5px 12px rgba(0,0,0,0.25);
+  font-size:14px;
 }
 
 .card img{
-width:100%;
-height:140px;
-object-fit:cover;
+  width:100%;
+  height:140px;
+  object-fit:cover;
 }
 
 .card h4{
-padding:8px;
-margin:0;
-font-size:14px;
+  padding:8px;
+  margin:0;
+  font-size:14px;
 }
 
 .card a{
-display:block;
-margin:8px;
-padding:8px;
-background:#7c3aed;
-color:white;
-text-decoration:none;
-border-radius:8px;
-font-size:13px;
+  display:block;
+  margin:8px;
+  padding:8px;
+  background:#7c3aed;
+  color:white;
+  text-decoration:none;
+  border-radius:8px;
+  font-size:13px;
 }
 
 .remover{
-margin:8px;
-background:#ef4444;
-color:white;
-border:none;
-padding:6px;
-border-radius:8px;
-cursor:pointer;
-font-size:12px;
+  margin:8px;
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:6px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:12px;
 }
 
-@media(max-width:500px){
+/* ===== RESPONSIVO PARA CELULAR ===== */
+@media (max-width: 500px) {
 
-#produtos{
-grid-template-columns:1fr;
-}
+  body {
+    padding: 10px;
+  }
 
+  input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  button, .upload-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  #preview img {
+    width: 80px;
+  }
+
+  #produtos {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  .card img {
+    height: 120px;
+  }
+
+  .card h4 {
+    font-size: 13px;
+  }
+
+  .card a {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .remover {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
 }
 
 </style>
@@ -178,251 +217,138 @@ grid-template-columns:1fr;
 <script>
 
 /* LER LISTA COMPARTILHADA */
-
 let params=new URLSearchParams(window.location.search);
-
 let listaCompartilhada=params.get("lista");
-
 let lista=listaCompartilhada
 ?JSON.parse(decodeURIComponent(listaCompartilhada))
 :JSON.parse(localStorage.getItem("wishlist"))||[];
 
 /* CONTADOR */
-
 function atualizarContador(){
-
-let titulo=document.getElementById("tituloPagina");
-
-titulo.innerText=`⭐ Minha Wishlist (${lista.length} itens)`;
-
+  let titulo=document.getElementById("tituloPagina");
+  titulo.innerText=`⭐ Minha Wishlist (${lista.length} itens)`;
 }
 
 /* SALVAR */
-
 function salvar(){
-
-localStorage.setItem("wishlist",JSON.stringify(lista));
-
+  localStorage.setItem("wishlist",JSON.stringify(lista));
 }
 
 /* RENDERIZAR */
-
 function renderizar(){
-
-let area=document.getElementById("produtos");
-
-area.innerHTML="";
-
-lista.forEach((produto,index)=>{
-
-let card=document.createElement("div");
-
-card.className="card";
-
-card.innerHTML=`
-
-<img src="${produto.imagem}">
-
-<h4>${produto.titulo}</h4>
-
-<a href="${produto.link}" target="_blank">Ver produto</a>
-
-<button class="remover">Remover</button>
-
-`;
-
-card.querySelector(".remover").onclick=()=>{
-
-lista.splice(index,1);
-
-salvar();
-
-renderizar();
-
-};
-
-area.appendChild(card);
-
-});
-
-atualizarContador();
-
+  let area=document.getElementById("produtos");
+  area.innerHTML="";
+  lista.forEach((produto,index)=>{
+    let card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <img src="${produto.imagem}">
+      <h4>${produto.titulo}</h4>
+      <a href="${produto.link}" target="_blank">Ver produto</a>
+      <button class="remover">Remover</button>
+    `;
+    card.querySelector(".remover").onclick=()=>{
+      lista.splice(index,1);
+      salvar();
+      renderizar();
+    };
+    area.appendChild(card);
+  });
+  atualizarContador();
 }
 
 /* PREVIEW */
-
 document.getElementById("imagem").addEventListener("change",function(){
-
-let arquivo=this.files[0];
-
-if(!arquivo)return;
-
-let reader=new FileReader();
-
-reader.onload=function(e){
-
-document.getElementById("preview").innerHTML=
-`<img src="${e.target.result}">`;
-
-};
-
-reader.readAsDataURL(arquivo);
-
+  let arquivo=this.files[0];
+  if(!arquivo) return;
+  let reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById("preview").innerHTML=`<img src="${e.target.result}">`;
+  };
+  reader.readAsDataURL(arquivo);
 });
 
 /* ADICIONAR PRODUTO */
-
 function adicionarProduto(){
-
-let titulo=document.getElementById("titulo").value;
-
-let link=document.getElementById("link").value;
-
-let arquivo=document.getElementById("imagem").files[0];
-
-if(!titulo||!link||!arquivo){
-
-alert("Preencha todos os campos");
-
-return;
-
-}
-
-let reader=new FileReader();
-
-reader.onload=function(e){
-
-let img=new Image();
-
-img.onload=function(){
-
-let canvas=document.createElement("canvas");
-
-let ctx=canvas.getContext("2d");
-
-let tamanhoMax=300;
-
-let largura=img.width;
-
-let altura=img.height;
-
-if(largura>altura){
-
-if(largura>tamanhoMax){
-
-altura*=tamanhoMax/largura;
-
-largura=tamanhoMax;
-
-}
-
-}else{
-
-if(altura>tamanhoMax){
-
-largura*=tamanhoMax/altura;
-
-altura=tamanhoMax;
-
-}
-
-}
-
-canvas.width=largura;
-
-canvas.height=altura;
-
-ctx.drawImage(img,0,0,largura,altura);
-
-let imagemComprimida=canvas.toDataURL("image/jpeg",0.7);
-
-lista.push({
-
-titulo:titulo,
-imagem:imagemComprimida,
-link:link
-
-});
-
-salvar();
-
-renderizar();
-
-/* LIMPAR CAMPOS */
-
-document.getElementById("titulo").value="";
-document.getElementById("link").value="";
-document.getElementById("imagem").value="";
-document.getElementById("preview").innerHTML="";
-
-};
-
-img.src=e.target.result;
-
-};
-
-reader.readAsDataURL(arquivo);
-
+  let titulo=document.getElementById("titulo").value;
+  let link=document.getElementById("link").value;
+  let arquivo=document.getElementById("imagem").files[0];
+  if(!titulo||!link||!arquivo){
+    alert("Preencha todos os campos");
+    return;
+  }
+  let reader=new FileReader();
+  reader.onload=function(e){
+    let img=new Image();
+    img.onload=function(){
+      let canvas=document.createElement("canvas");
+      let ctx=canvas.getContext("2d");
+      let tamanhoMax=300;
+      let largura=img.width;
+      let altura=img.height;
+      if(largura>altura){
+        if(largura>tamanhoMax){
+          altura*=tamanhoMax/largura;
+          largura=tamanhoMax;
+        }
+      }else{
+        if(altura>tamanhoMax){
+          largura*=tamanhoMax/altura;
+          altura=tamanhoMax;
+        }
+      }
+      canvas.width=largura;
+      canvas.height=altura;
+      ctx.drawImage(img,0,0,largura,altura);
+      let imagemComprimida=canvas.toDataURL("image/jpeg",0.7);
+      lista.push({
+        titulo:titulo,
+        imagem:imagemComprimida,
+        link:link
+      });
+      salvar();
+      renderizar();
+      document.getElementById("titulo").value="";
+      document.getElementById("link").value="";
+      document.getElementById("imagem").value="";
+      document.getElementById("preview").innerHTML="";
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(arquivo);
 }
 
 /* EXPORTAR */
-
 function exportarWishlist(){
-
-let dados=JSON.stringify(lista,null,2);
-
-let blob=new Blob([dados],{type:"application/json"});
-
-let url=URL.createObjectURL(blob);
-
-let a=document.createElement("a");
-
-a.href=url;
-
-a.download="wishlist.json";
-
-a.click();
-
-URL.revokeObjectURL(url);
-
+  let dados=JSON.stringify(lista,null,2);
+  let blob=new Blob([dados],{type:"application/json"});
+  let url=URL.createObjectURL(blob);
+  let a=document.createElement("a");
+  a.href=url;
+  a.download="wishlist.json";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 /* IMPORTAR */
-
 document.getElementById("importarArquivo").addEventListener("change",function(){
-
-let arquivo=this.files[0];
-
-if(!arquivo)return;
-
-let reader=new FileReader();
-
-reader.onload=function(e){
-
-lista=JSON.parse(e.target.result);
-
-salvar();
-
-renderizar();
-
-};
-
-reader.readAsText(arquivo);
-
+  let arquivo=this.files[0];
+  if(!arquivo) return;
+  let reader=new FileReader();
+  reader.onload=function(e){
+    lista=JSON.parse(e.target.result);
+    salvar();
+    renderizar();
+  };
+  reader.readAsText(arquivo);
 });
 
 /* COMPARTILHAR */
-
 function compartilharWishlist(){
-
-let dados=encodeURIComponent(JSON.stringify(lista));
-
-let link=window.location.origin+window.location.pathname+"?lista="+dados;
-
-navigator.clipboard.writeText(link);
-
-alert("Link da wishlist copiado!");
-
+  let dados=encodeURIComponent(JSON.stringify(lista));
+  let link=window.location.origin+window.location.pathname+"?lista="+dados;
+  navigator.clipboard.writeText(link);
+  alert("Link da wishlist copiado!");
 }
 
 renderizar();
